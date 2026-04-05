@@ -1,0 +1,42 @@
+# Build artifacts
+*.o
+*.obj
+*.exe
+*.out
+*.elf
+*.bin
+*.hex
+*.map
+*.log
+
+# IDE/editor files
+.vscode/
+*.swp
+*.swo
+*.bak
+*.tmp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Dependency folders (if any)
+__pycache__/
+
+# Test outputs
+/tests/*.out
+/tests/*.log
+
+# Ignore documentation build outputs (if any)
+*.pdf
+*.html
+
+# Ignore user-specific files
+*.user
+*.sublime-workspace
+*.sublime-project
+
+# Ignore empty folders
+!.gitkeep
+
+.vscode/
