@@ -3,7 +3,7 @@
  * @brief   Milestone 5: software-only PID simulation with CSV logging.
  *
  *  Compile and run entirely on host PC — no MCU required:
- *    gcc -Wall -Wextra -o pid_sim main_sim_test.c pid.c thermal_sim.c logger_test.c -lm
+ *    gcc -Wall -Wextra -o pid_sim main_sim_test.c pid_test.c thermal_sim_test.c logger_test.c -lm
  *    ./pid_sim > run.csv
  *    # then open run.csv in Excel / LibreOffice / Python
  *

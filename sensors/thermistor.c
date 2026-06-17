@@ -31,9 +31,6 @@ static float adc_to_resistance(uint16_t adc_count)
     return (float)THERMISTOR_R_REF_OHMS * (float)adc_count / ((float)ADC_MAX_COUNT - (float)adc_count);
 }
 
-/* ─────────────────────────────────────────────────────────────────────────── */
-// ...existing code...
-
 /**
  * @brief  Convert thermistor resistance to temperature using the Beta equation.
  *
