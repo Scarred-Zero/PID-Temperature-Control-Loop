@@ -1,5 +1,5 @@
 
-#include "hal_pwm.h"
+#include "hal/hal_pwm.h"
 #include <stdint.h>
 #include <stdio.h>
 
@@ -34,54 +34,3 @@ int main(void)
     }
     return 0;
 }
-| `TCCR1A / TCCR1B` config | Sets Fast PWM 8-bit Mode 5, non-inverting, prescaler /128 | Mode 5 uses the hardware's internal 0xFF top — no extra register needed; prescaler /128 gives ~488 Hz |
-| `OCR1A = 0` in Init | Heater starts OFF | Safe default — a heater that powers on at 100% on reset could cause thermal runaway before the PID takes control |
-| Clamp in `set_pwm_duty()` | Caps input at 100 | Defense in depth: the PID output clamp (Milestone 3) is the first line; this is the second — hardware must never receive out-of-range values |
-| Integer scale `(duty × 255) / 100` | Converts % to OCR count | Keeps the PWM driver float-free; uint16_t intermediate prevents overflow (max = 100 × 255 = 25500, well within uint16_t range of 65535) |
-| Sweep in `main_m2.c` | Steps through 5 duty levels | Lets you verify linearity with a scope — each step should show a proportionally wider pulse |
-
----
-
-## MOSFET Wiring Note
-```
-    +12V (heater supply)
-        │
-    [HEATER]
-        │
-    MOSFET Drain
-    MOSFET Gate ──[100Ω]── OC1A (MCU Pin 9)
-    MOSFET Source ──────── GND
-        │
-        GND (shared with MCU GND — critical)
-```
-
-The 100Ω gate resistor damps switching oscillations. The shared GND between MCU and MOSFET supply is **mandatory** — without it, the gate-source voltage reference is undefined.
-
----
-```
-╔══════════════════════════════════════════════════════════════════╗
-║              ✅  MILESTONE 2 CHECKPOINT                          ║
-╠══════════════════════════════════════════════════════════════════╣
-║  WHAT WAS BUILT:                                                 ║
-║  • hal_pwm.h / hal_pwm.c — portable PWM abstraction             ║
-║  • Timer1 Fast PWM @ ~488 Hz on OC1A (Arduino Pin 9)            ║
-║  • set_pwm_duty(uint8_t) — clean 0–100% API                     ║
-║  • main_m2.c — automated duty-cycle sweep for verification       ║
-╠══════════════════════════════════════════════════════════════════╣
-║  VERIFICATION TEST:                                              ║
-║                                                                  ║
-║  Option A — Oscilloscope:                                        ║
-║    Probe OC1A pin. Confirm pulse widths at each step:            ║
-║      0%  → constant LOW                                          ║
-║     25%  → HIGH ≈ 0.51 ms  (of ~2.05 ms period)                 ║
-║     50%  → HIGH ≈ 1.02 ms                                        ║
-║     75%  → HIGH ≈ 1.54 ms                                        ║
-║    100%  → constant HIGH                                         ║
-║                                                                  ║
-║  Option B — LED + 220Ω resistor (no oscilloscope):              ║
-║    Wire LED between OC1A and GND (via 220Ω).                    ║
-║    Confirm LED steps through 5 visible brightness levels.        ║
-║    PASS: clear brightness difference at each 2-second hold.      ║
-╠══════════════════════════════════════════════════════════════════╣
-
-*/
