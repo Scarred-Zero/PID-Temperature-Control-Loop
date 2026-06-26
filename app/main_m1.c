@@ -1,6 +1,6 @@
 
-#include "hal_adc.h"
-#include "thermistor.h"
+#include "hal/hal_adc.h"
+#include "sensors/thermistor.h"
 #include <stdio.h>
 
 // Simple busy-delay (replace with hardware timer on real MCU)

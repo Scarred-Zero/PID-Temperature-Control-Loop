@@ -18,11 +18,11 @@
  *    ALL samples must remain within that band.
  */
 
-#include "pid.h"
+#include "controllers/pid.h"
 #include "sim/thermal_sim.h"
 #include "sim/logger.h"
-#include "control_loop.h"
-#include "hal_timer.h"
+#include "controllers/control_loop.h"
+#include "hal/hal_timer.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <math.h> /* fabsf */

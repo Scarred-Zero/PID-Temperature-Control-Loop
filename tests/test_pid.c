@@ -1,5 +1,5 @@
 
-#include "pid.h"
+#include "controllers/pid.h"
 #include <stdio.h>
 #include <math.h> /* fabsf */
 
@@ -120,51 +120,3 @@ int main(void)
 
     return 0;
 }
-/*
-```
-
----
-
-## Code Walkthrough
-
-| Block | What it does | Why it's designed this way |
-|---|---|---|
-| `PID_Controller` struct | Holds all tuning params + runtime state in one object | Reentrant — you can run two independent PID loops (heater + fan) with separate instances |
-| `clamp()` helper | Bounds a float to `[low, high]` | Used in two places: integral accumulator and final output — defined once, no duplication |
-| Integral clamped to `[out_min, out_max]` | Anti-windup | Accumulator can never exceed what the physical actuator can deliver, preventing post-saturation overshoot |
-| Filtered derivative with `alpha`/`beta` | EWA low-pass on D term | When `tau=0`, reduces to raw derivative; as tau grows, smoothing increases — tunable without changing algorithm structure |
-| `prev_error` and `prev_d_term` saved at end | State for next iteration | Must be updated *after* output computation — updating before would corrupt this cycle's D term |
-| `PID_Reset()` separate from `PID_Init()` | Clears state, preserves tuning | Useful for bumpless restart after e-stop without re-specifying Kp/Ki/Kd |
-| `tau=0` in unit test | Disables filter | Makes hand-calculation exact — you can verify every digit without filter algebra |
-
----
-```
-╔══════════════════════════════════════════════════════════════════╗
-║              ✅  MILESTONE 3 CHECKPOINT                          ║
-╠══════════════════════════════════════════════════════════════════╣
-║  WHAT WAS BUILT:                                                 ║
-║  • pid.h — fully documented PID_Controller struct + API          ║
-║  • pid.c — P, I (anti-windup), D (low-pass filtered) terms      ║
-║  • test_pid.c — host-runnable unit test with hand-calc verify    ║
-╠══════════════════════════════════════════════════════════════════╣
-║  VERIFICATION TEST:                                              ║
-║                                                                  ║
-║  Step 1 — Compile and run on your PC:                            ║
-║    gcc -Wall -Wextra -o test_pid test_pid.c pid.c -lm            ║
-║    ./test_pid                                                     ║
-║                                                                  ║
-║  Step 2 — Confirm hand-calculated values match:                  ║
-║    Step 0 output → 26.000                                        ║
-║    Step 1 output → 19.600                                        ║
-║    Step 2 output → 15.200                                        ║
-║                                                                  ║
-║  Step 3 — Confirm anti-windup test:                              ║
-║    Integral after 50 large-error steps ≤ 100.0                   ║
-║                                                                  ║
-║  PASS criterion: "ALL PASS ✓" and "Anti-windup: PASS ✓"         ║
-╠══════════════════════════════════════════════════════════════════╣
-║  ➡  Reply "M3 PASS" to proceed to Milestone 4                   ║
-║     (Closed-Loop Integration & Control Loop Timing)              ║
-║  ➡  Reply "M3 FAIL: [symptom]" for diagnosis & fix              ║
-╚══════════════════════════════════════════════════════════════════╝
-*/
