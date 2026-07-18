@@ -12,7 +12,7 @@ static float clamp(float value, float low, float high)
     return value;
 }
 
-/* ─────────────────────────────────────────────────────────────────────────── */
+/* ──────────────────────────────── */
 // ...existing code...
 
 /**
@@ -43,12 +43,12 @@ void PID_Init(PID_Controller *pid,
     pid->prev_d_term = 0.0f;
 }
 
-/* ─────────────────────────────────────────────────────────────────────────── */
+/* ──────────────────────────────── */
 
 /**
  * @brief  Compute one PID control step.
  *
- * ── ALGORITHM DETAIL ────────────────────────────────────────────────────────
+ * ── ALGORITHM DETAIL ─────────────
  *
  *  Error:
  *    e[n] = setpoint - measured
@@ -96,22 +96,21 @@ void PID_Init(PID_Controller *pid,
  *    output = P + I + D
  *    output = clamp(output, out_min, out_max)
  *
- * ────────────────────────────────────────────────────────────────────────────
+ * ─────────────────────────────────
  */
-float PID_Compute(PID_Controller *pid, float setpoint, float measured)
-{
+float PID_Compute(PID_Controller *pid, float setpoint, float measured) {
     if (pid == NULL)
     {
         return 0.0f;
     }
 
-    /* ── 1. Error ─────────────────────────────────────────────────────── */
+    /* ── 1. Error  */
     float error = setpoint - measured;
 
-    /* ── 2. Proportional Term ─────────────────────────────────────────── */
+    /* ── 2. Proportional Term  */
     float p_term = pid->kp * error;
 
-    /* ── 3. Integral Term with Anti-Windup ────────────────────────────── */
+    /* ── 3. Integral Term with Anti-Windup  */
     pid->integral += pid->ki * pid->dt * error;
 
     /*
@@ -123,7 +122,7 @@ float PID_Compute(PID_Controller *pid, float setpoint, float measured)
 
     float i_term = pid->integral;
 
-    /* ── 4. Derivative Term with Low-Pass Filter ──────────────────────── */
+    /* ── 4. Derivative Term with Low-Pass Filter  */
     /*
      * Discrete low-pass filtered derivative.
      * Coefficients derived from bilinear transform of D(s) = Kd*s/(tau*s+1):
@@ -139,18 +138,18 @@ float PID_Compute(PID_Controller *pid, float setpoint, float measured)
 
     float d_term = alpha * pid->prev_d_term + beta * (error - pid->prev_error);
 
-    /* ── 5. Combine Terms & Clamp Output ─────────────────────────────── */
+    /* ── 5. Combine Terms & Clamp Output */
     float output = p_term + i_term + d_term;
     output = clamp(output, pid->out_min, pid->out_max);
 
-    /* ── 6. Save State for Next Iteration ────────────────────────────── */
+    /* ── 6. Save State for Next Iteration  */
     pid->prev_error = error;
     pid->prev_d_term = d_term;
 
     return output;
 }
 
-/* ─────────────────────────────────────────────────────────────────────────── */
+/* ──────────────────── */
 
 /**
  * @brief  Reset internal integrator and derivative state.

@@ -24,7 +24,6 @@
  *
  *  STEP 0:
  *    P = 2.0 × 10.0              = 20.000
-// ...existing code...
  *    I = 0.0 + 0.5×1.0×10.0     = +5.000  → integral = 5.000
  *    D = 0×0 + 0.1×(10.0 - 0.0) = +1.000  (prev_error=0 at start)
  *    output = 20.0 + 5.0 + 1.0  = 26.000
@@ -67,7 +66,7 @@ int main(void)
              TEST_TAU, TEST_DT,
              TEST_OUT_MIN, TEST_OUT_MAX);
 
-    printf("=== Milestone 3: PID Unit Test ===\n");
+    printf("\n=== Milestone 3: PID Unit Test ===\n");
     printf("Kp=%.1f  Ki=%.1f  Kd=%.1f  tau=%.1f  dt=%.1f\n\n",
            TEST_KP, TEST_KI, TEST_KD, TEST_TAU, TEST_DT);
 
@@ -101,7 +100,7 @@ int main(void)
     }
 
     printf("---------------------------------------------------------------\n");
-    printf("Overall: %s\n\n", all_pass ? "ALL PASS ✓" : "FAILURES DETECTED ✗");
+    printf("Overall: %s\n\n", all_pass ? "ALL PASS" : "FAILURES DETECTED");
 
     /* Anti-windup test: force integral to saturate, confirm clamping */
     printf("=== Anti-Windup Clamp Test ===\n");
@@ -116,7 +115,8 @@ int main(void)
     printf("Integral after 50 steps of error=100: %.2f  (expect <= %.1f)\n",
            pid.integral, TEST_OUT_MAX);
     printf("Anti-windup: %s\n",
-           (pid.integral <= TEST_OUT_MAX) ? "PASS ✓" : "FAIL ✗");
+           (pid.integral <= TEST_OUT_MAX) ? "PASS" : "FAIL");
+    printf("\n");
 
     return 0;
 }
